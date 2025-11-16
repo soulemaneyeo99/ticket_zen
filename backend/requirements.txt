@@ -1,0 +1,65 @@
+# Django & REST Framework
+Django==5.0.2
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+django-filter==24.1
+django-cors-headers==4.3.1
+
+# Base de données
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Cache & Celery
+redis==5.0.1
+celery==5.3.6
+django-redis==5.4.0
+
+# Sécurité & Cryptographie
+cryptography==42.0.2
+PyJWT==2.8.0
+python-decouple==3.8
+
+# QR Code
+qrcode[pil]==7.4.2
+Pillow==10.2.0
+
+# Documentation API
+drf-spectacular==0.27.1
+
+# Validation & Parsing
+pydantic==2.6.1
+python-dateutil==2.8.2
+
+# Export de données
+openpyxl==3.1.2
+xlsxwriter==3.2.0
+reportlab==4.1.0
+
+# HTTP & Webhooks
+requests==2.31.0
+httpx==0.26.0
+
+# Monitoring & Logs
+django-extensions==3.2.3
+django-debug-toolbar==4.3.0
+
+# Rate limiting
+django-ratelimit==4.1.0
+
+# Timezone
+pytz==2024.1
+
+# Testing
+pytest==8.0.0
+pytest-django==4.7.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+faker==23.1.0
+
+# WSGI Server
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Environnement
+python-dotenv==1.0.1
+

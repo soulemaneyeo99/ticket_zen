@@ -1,0 +1,17 @@
+# Node.js
+node_modules/
+dist/
+
+# Python/Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+venv/
+.env
+*.log
+
+# Docker
+*.env
+*.log
