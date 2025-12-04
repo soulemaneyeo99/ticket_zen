@@ -25,14 +25,17 @@ RUN pip install --upgrade pip && \
 # Copie du code source
 COPY . .
 
+# Copie du script de démarrage
+COPY start.sh /app/start.sh
+
 # Création des répertoires nécessaires
 RUN mkdir -p /app/staticfiles /app/media /app/logs /app/keys
 
 # Permissions
-RUN chmod +x /app/manage.py
+RUN chmod +x /app/manage.py /app/start.sh
 
 # Expose le port
 EXPOSE 8000
 
 # Commande par défaut
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["/app/start.sh"]
