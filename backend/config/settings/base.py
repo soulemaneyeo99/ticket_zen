@@ -188,7 +188,7 @@ SIMPLE_JWT = {
 }
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "backend"]
+ALLOWED_HOSTS = ["*", "http://localhost:3000/", "localhost", "127.0.0.1", "backend"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",

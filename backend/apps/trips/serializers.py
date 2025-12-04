@@ -149,7 +149,7 @@ class TripListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'company_name', 'departure_city', 'departure_city_name',
             'arrival_city', 'arrival_city_name', 'departure_datetime',
-            'base_price', 'available_seats', 'total_seats',
+            'estimated_duration', 'base_price', 'available_seats', 'total_seats',
             'status', 'status_display', 'occupancy_rate'
         ]
 
@@ -163,7 +163,8 @@ class TripSearchSerializer(serializers.Serializer):
     passengers = serializers.IntegerField(required=False, default=1, min_value=1, max_value=10)
     
     def validate_departure_date(self, value):
-        """Vérifier que la date est dans le futur"""
+        """Vérifier que la date n'est pas dans le passé (hier ou avant)"""
         if value < timezone.now().date():
-            raise serializers.ValidationError('La date de départ doit être dans le futur.')
+            # On accepte aujourd'hui, mais pas hier
+            raise serializers.ValidationError('La date de départ ne peut pas être dans le passé.')
         return value

@@ -123,18 +123,33 @@ class TripViewSet(viewsets.ModelViewSet):
             departure_date = serializer.validated_data['departure_date']
             passengers = serializer.validated_data.get('passengers', 1)
             
-            # Construire la requête
-            start_of_day = datetime.combine(departure_date, datetime.min.time())
-            end_of_day = datetime.combine(departure_date, datetime.max.time())
+            # Gestion des fuseaux horaires
+            current_tz = timezone.get_current_timezone()
+            now = timezone.now()
             
+            # Début et fin de la journée demandée
+            start_of_day = timezone.make_aware(datetime.combine(departure_date, datetime.min.time()), current_tz)
+            end_of_day = timezone.make_aware(datetime.combine(departure_date, datetime.max.time()), current_tz)
+            
+            # Si la date est aujourd'hui, on cherche à partir de maintenant
+            # Sinon, on cherche toute la journée
+            if departure_date == now.date():
+                search_start = now
+            else:
+                search_start = start_of_day
+                
+            # Si la date est passée (mais validée par le serializer, donc c'est "hier" proche ou erreur), on ne renvoie rien
+            if end_of_day < now:
+                return Response([])
+
             queryset = Trip.objects.filter(
                 departure_city_id=departure_city,
                 arrival_city_id=arrival_city,
-                departure_datetime__range=(start_of_day, end_of_day),
+                departure_datetime__range=(search_start, end_of_day),
                 status=Trip.SCHEDULED,
                 is_active=True,
                 available_seats__gte=passengers
-            ).select_related('company', 'vehicle', 'departure_city', 'arrival_city')
+            ).select_related('company', 'vehicle', 'departure_city', 'arrival_city').order_by('departure_datetime')
             
             page = self.paginate_queryset(queryset)
             if page is not None:
