@@ -69,7 +69,8 @@ coverage.xml
 .pytest_cache/
 
 # Logs
-logs/
+logs/*.log
+logs/**/*.log
 *.log
 
 # Exports
