@@ -1,0 +1,218 @@
+[
+    {
+        "model": "trips.city",
+        "pk": 1,
+        "fields": {
+            "name": "Abidjan",
+            "slug": "abidjan",
+            "country": "Côte d'Ivoire",
+            "latitude": "5.360000",
+            "longitude": "-4.008300",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 2,
+        "fields": {
+            "name": "Yamoussoukro",
+            "slug": "yamoussoukro",
+            "country": "Côte d'Ivoire",
+            "latitude": "6.827600",
+            "longitude": "-5.289300",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 3,
+        "fields": {
+            "name": "Bouaké",
+            "slug": "bouake",
+            "country": "Côte d'Ivoire",
+            "latitude": "7.690000",
+            "longitude": "-5.030000",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 4,
+        "fields": {
+            "name": "Daloa",
+            "slug": "daloa",
+            "country": "Côte d'Ivoire",
+            "latitude": "6.877000",
+            "longitude": "-6.450300",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 5,
+        "fields": {
+            "name": "San-Pédro",
+            "slug": "san-pedro",
+            "country": "Côte d'Ivoire",
+            "latitude": "4.748500",
+            "longitude": "-6.636300",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 6,
+        "fields": {
+            "name": "Korhogo",
+            "slug": "korhogo",
+            "country": "Côte d'Ivoire",
+            "latitude": "9.458000",
+            "longitude": "-5.629600",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 7,
+        "fields": {
+            "name": "Man",
+            "slug": "man",
+            "country": "Côte d'Ivoire",
+            "latitude": "7.412500",
+            "longitude": "-7.553900",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 8,
+        "fields": {
+            "name": "Gagnoa",
+            "slug": "gagnoa",
+            "country": "Côte d'Ivoire",
+            "latitude": "6.131900",
+            "longitude": "-5.950600",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 9,
+        "fields": {
+            "name": "Abengourou",
+            "slug": "abengourou",
+            "country": "Côte d'Ivoire",
+            "latitude": "6.729700",
+            "longitude": "-3.496700",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 10,
+        "fields": {
+            "name": "Divo",
+            "slug": "divo",
+            "country": "Côte d'Ivoire",
+            "latitude": "5.837200",
+            "longitude": "-5.357200",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 11,
+        "fields": {
+            "name": "Soubré",
+            "slug": "soubre",
+            "country": "Côte d'Ivoire",
+            "latitude": "5.785600",
+            "longitude": "-6.603900",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 12,
+        "fields": {
+            "name": "Bondoukou",
+            "slug": "bondoukou",
+            "country": "Côte d'Ivoire",
+            "latitude": "8.040600",
+            "longitude": "-2.800000",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 13,
+        "fields": {
+            "name": "Odienné",
+            "slug": "odienne",
+            "country": "Côte d'Ivoire",
+            "latitude": "9.500000",
+            "longitude": "-7.566700",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 14,
+        "fields": {
+            "name": "Séguéla",
+            "slug": "seguela",
+            "country": "Côte d'Ivoire",
+            "latitude": "7.961100",
+            "longitude": "-6.673100",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 15,
+        "fields": {
+            "name": "Sassandra",
+            "slug": "sassandra",
+            "country": "Côte d'Ivoire",
+            "latitude": "4.950000",
+            "longitude": "-6.083300",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 16,
+        "fields": {
+            "name": "Grand-Bassam",
+            "slug": "grand-bassam",
+            "country": "Côte d'Ivoire",
+            "latitude": "5.211100",
+            "longitude": "-3.738900",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 17,
+        "fields": {
+            "name": "Adzopé",
+            "slug": "adzope",
+            "country": "Côte d'Ivoire",
+            "latitude": "6.106900",
+            "longitude": "-3.858900",
+            "is_active": true
+        }
+    },
+    {
+        "model": "trips.city",
+        "pk": 18,
+        "fields": {
+            "name": "Agboville",
+            "slug": "agboville",
+            "country": "Côte d'Ivoire",
+            "latitude": "5.928100",
+            "longitude": "-4.213900",
+            "is_active": true
+        }
+    }
+]

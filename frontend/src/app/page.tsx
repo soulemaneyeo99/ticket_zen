@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
@@ -15,7 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Calendar, MapPin, Bus, Shield, Smartphone, Menu } from 'lucide-react';
+import { Calendar, MapPin, Bus, Shield, Smartphone, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { useAuthStore } from '@/store/auth';
@@ -31,6 +32,7 @@ type SearchForm = z.infer<typeof searchSchema>;
 export default function HomePage() {
     const router = useRouter();
     const { isAuthenticated, user, logout } = useAuthStore();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const {
         register,
@@ -43,10 +45,12 @@ export default function HomePage() {
     });
 
     // Fetch cities with React Query
-    const { data: cities = [] } = useQuery({
+    const { data: cities = [], isLoading: citiesLoading } = useQuery({
         queryKey: ['cities'],
         queryFn: () => apiGet<City[]>('/cities/'),
     });
+
+    console.log('Cities loaded:', cities.length, cities);
 
     const onSearch = (data: SearchForm) => {
         const params = new URLSearchParams({
@@ -91,10 +95,49 @@ export default function HomePage() {
                         )}
                     </div>
 
-                    <Button variant="ghost" size="icon" className="md:hidden text-white">
-                        <Menu className="w-6 h-6" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:hidden text-white"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </Button>
                 </div>
+
+                {/* Mobile Menu */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden mt-4 pb-4 border-t border-slate-700 pt-4 space-y-3">
+                        {isAuthenticated ? (
+                            <>
+                                <div className="text-sm text-slate-300 px-2">Bonjour, {user?.first_name}</div>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => {
+                                        logout();
+                                        setMobileMenuOpen(false);
+                                    }}
+                                    className="w-full text-white hover:text-amber-400 justify-start"
+                                >
+                                    Déconnexion
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                                    <Button variant="ghost" className="w-full text-white hover:text-amber-400 justify-start">
+                                        Connexion
+                                    </Button>
+                                </Link>
+                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                                    <Button className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
+                                        S'inscrire
+                                    </Button>
+                                </Link>
+                            </>
+                        )}
+                    </div>
+                )}
             </nav>
 
             {/* Hero Section */}
