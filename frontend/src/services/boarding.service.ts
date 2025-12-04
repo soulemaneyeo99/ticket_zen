@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios';
-import { Ticket } from './ticket.service';
+import { api } from '@/lib/api';
+import { Ticket } from '@/types/api';
 
 export interface BoardingPass {
     id: number;

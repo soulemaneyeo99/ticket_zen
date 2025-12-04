@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios';
-import { PaginatedResponse } from '@/types';
+import { api } from '@/lib/api';
+import { PaginatedResponse } from '@/types/api';
 
 export interface Vehicle {
     id: number;

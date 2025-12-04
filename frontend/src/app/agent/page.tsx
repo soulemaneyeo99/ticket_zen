@@ -1,8 +1,8 @@
 'use client';
 
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthStore } from '@/store/auth';
 import { Button } from '@/components/ui/button';
-import { authService } from '@/services/auth.service';
+import { authService } from '@/services/auth';
 import { useRouter } from 'next/navigation';
 
 export default function AgentDashboard() {

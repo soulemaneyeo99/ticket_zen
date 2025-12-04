@@ -9,24 +9,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function NewVehiclePage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    const { toast } = useToast();
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
             await fleetService.create(data);
-            toast({ title: "Véhicule ajouté avec succès" });
+            toast.success("Véhicule ajouté avec succès");
             router.push('/company/fleet');
         } catch (error) {
-            toast({ variant: "destructive", title: "Erreur lors de l'ajout" });
+            toast.error("Erreur lors de l'ajout");
         } finally {
             setIsLoading(false);
         }

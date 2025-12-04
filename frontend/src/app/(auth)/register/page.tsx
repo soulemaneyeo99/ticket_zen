@@ -5,13 +5,18 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authService, RegisterData } from '@/services/auth.service';
+import { authService } from '@/services/auth';
+import { RegisterPayload } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Bus, User, Building2, Mail, Phone, Lock, ArrowRight, Loader2 } from 'lucide-react';
 import { z } from 'zod';
+
+type RegisterForm = RegisterPayload & {
+    password_confirm: string;
+};
 
 const registerSchema = z.object({
     first_name: z.string().min(2, 'Prénom requis'),
@@ -20,7 +25,7 @@ const registerSchema = z.object({
     phone_number: z.string().min(10, 'Numéro invalide'),
     password: z.string().min(8, '8 caractères minimum'),
     password_confirm: z.string(),
-    role: z.enum(['voyageur', 'compagnie']),
+    role: z.enum(['client', 'compagnie']),
 }).refine((data) => data.password === data.password_confirm, {
     message: "Les mots de passe ne correspondent pas",
     path: ["password_confirm"],
@@ -28,27 +33,24 @@ const registerSchema = z.object({
 
 export default function RegisterPage() {
     const router = useRouter();
-    const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedRole, setSelectedRole] = useState<'voyageur' | 'compagnie'>('voyageur');
+    const [selectedRole, setSelectedRole] = useState<'client' | 'compagnie'>('client');
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<RegisterData>({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<RegisterForm>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            role: 'voyageur'
+            role: 'client'
         }
     });
 
-    const onSubmit = async (data: RegisterData) => {
+    const onSubmit = async (data: RegisterForm) => {
         setIsLoading(true);
         try {
-            await authService.register(data);
+            // Remove password_confirm before sending to API
+            const { password_confirm, ...payload } = data;
+            await authService.register(payload);
 
-            toast({
-                title: "Compte créé avec succès",
-                description: "Vous pouvez maintenant vous connecter.",
-                className: "bg-green-50 border-green-200 text-green-800",
-            });
+            toast.success("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
 
             router.push('/login');
         } catch (error: any) {
@@ -59,17 +61,13 @@ export default function RegisterPage() {
                 error?.response?.data?.detail ||
                 "Une erreur est survenue. Vérifiez vos informations.";
 
-            toast({
-                variant: "destructive",
-                title: "Erreur d'inscription",
-                description: errorMessage,
-            });
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleRoleSelect = (role: 'voyageur' | 'compagnie') => {
+    const handleRoleSelect = (role: 'client' | 'compagnie') => {
         setSelectedRole(role);
         setValue('role', role);
     };
@@ -119,11 +117,11 @@ export default function RegisterPage() {
                         {/* Role Selection */}
                         <div className="grid grid-cols-2 gap-4">
                             <div
-                                onClick={() => handleRoleSelect('voyageur')}
-                                className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${selectedRole === 'voyageur' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                                onClick={() => handleRoleSelect('client')}
+                                className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${selectedRole === 'client' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
                             >
-                                <User className={`w-6 h-6 mb-2 ${selectedRole === 'voyageur' ? 'text-blue-600' : 'text-gray-400'}`} />
-                                <h3 className={`font-bold ${selectedRole === 'voyageur' ? 'text-blue-900' : 'text-gray-700'}`}>Voyageur</h3>
+                                <User className={`w-6 h-6 mb-2 ${selectedRole === 'client' ? 'text-blue-600' : 'text-gray-400'}`} />
+                                <h3 className={`font-bold ${selectedRole === 'client' ? 'text-blue-900' : 'text-gray-700'}`}>Voyageur</h3>
                             </div>
                             <div
                                 onClick={() => handleRoleSelect('compagnie')}

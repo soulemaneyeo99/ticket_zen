@@ -7,14 +7,13 @@ import { fleetService, Vehicle } from '@/services/fleet.service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Trash2, Edit, Bus } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 // Since I haven't created the Table component yet, I'll use a simple HTML table structure or create the component.
 // Let's create the Table component first in the next step or inline it.
 // I'll inline a simple table for now to avoid blocking.
 
 export default function FleetPage() {
-    const { toast } = useToast();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
 
@@ -27,10 +26,10 @@ export default function FleetPage() {
         mutationFn: fleetService.delete,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['vehicles'] });
-            toast({ title: "Véhicule supprimé" });
+            toast.success("Véhicule supprimé");
         },
         onError: () => {
-            toast({ variant: "destructive", title: "Erreur lors de la suppression" });
+            toast.error("Erreur lors de la suppression");
         }
     });
 

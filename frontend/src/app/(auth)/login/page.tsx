@@ -5,12 +5,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthStore } from '@/store/auth.store';
-import { authService, LoginCredentials } from '@/services/auth.service';
+import { useAuthStore } from '@/store/auth';
+import { authService } from '@/services/auth';
+import { LoginPayload } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Bus, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 
@@ -23,24 +24,19 @@ function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { setAuth } = useAuthStore();
-    const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { register, handleSubmit, formState: { errors } } = useForm<LoginCredentials>({
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginPayload>({
         resolver: zodResolver(loginSchema),
     });
 
-    const onSubmit = async (data: LoginCredentials) => {
+    const onSubmit = async (data: LoginPayload) => {
         setIsLoading(true);
         try {
             const response = await authService.login(data);
-            setAuth(response.user, response.tokens.access);
+            setAuth(response.user, response.tokens.access, response.tokens.refresh);
 
-            toast({
-                title: "Connexion réussie",
-                description: `Bienvenue, ${response.user.first_name} !`,
-                className: "bg-green-50 border-green-200 text-green-800",
-            });
+            toast.success(`Bienvenue, ${response.user.first_name} !`);
 
             // Redirect based on role
             const from = searchParams.get('from');
@@ -62,11 +58,7 @@ function LoginForm() {
                 }
             }
         } catch (error) {
-            toast({
-                variant: "destructive",
-                title: "Erreur de connexion",
-                description: "Email ou mot de passe incorrect.",
-            });
+            toast.error("Email ou mot de passe incorrect.");
         } finally {
             setIsLoading(false);
         }

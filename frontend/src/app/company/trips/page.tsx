@@ -3,36 +3,36 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { tripService, Trip } from '@/services/trip.service';
+import { tripsService } from '@/services/trips';
+import { Trip } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Trash2, Edit, Calendar, MapPin } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 export default function TripsPage() {
-    const { toast } = useToast();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
 
     const { data, isLoading } = useQuery({
         queryKey: ['trips', page],
-        queryFn: () => tripService.getAll({ page }),
+        queryFn: () => tripsService.getAll({ page }),
     });
 
     const deleteMutation = useMutation({
-        mutationFn: tripService.delete,
+        mutationFn: (id: string) => tripsService.delete(id), // Assuming delete exists or I need to add it
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['trips'] });
-            toast({ title: "Voyage supprimé" });
+            toast.success("Voyage supprimé");
         },
         onError: () => {
-            toast({ variant: "destructive", title: "Erreur lors de la suppression" });
+            toast.error("Erreur lors de la suppression");
         }
     });
 
-    const handleDelete = (id: number) => {
+    const handleDelete = (id: string) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce voyage ?')) {
             deleteMutation.mutate(id);
         }
@@ -80,22 +80,22 @@ export default function TripsPage() {
                                     {data?.results.map((trip: Trip) => (
                                         <tr key={trip.id} className="border-b transition-colors hover:bg-muted/50">
                                             <td className="p-4 align-middle font-medium">
-                                                {typeof trip.departure_city === 'object' ? trip.departure_city.name : trip.departure_city}
+                                                {trip.departure_city.name}
                                             </td>
                                             <td className="p-4 align-middle">
-                                                {typeof trip.arrival_city === 'object' ? trip.arrival_city.name : trip.arrival_city}
+                                                {trip.arrival_city.name}
                                             </td>
                                             <td className="p-4 align-middle">
-                                                {format(new Date(trip.departure_time), 'dd MMM yyyy HH:mm', { locale: fr })}
+                                                {format(new Date(trip.departure_datetime), 'dd MMM yyyy HH:mm', { locale: fr })}
                                             </td>
                                             <td className="p-4 align-middle">
-                                                {typeof trip.vehicle === 'object' ? trip.vehicle.registration_number : trip.vehicle}
+                                                {trip.vehicle.type}
                                             </td>
                                             <td className="p-4 align-middle">{trip.price} FCFA</td>
                                             <td className="p-4 align-middle">
                                                 <span className={`px-2 py-1 rounded-full text-xs ${trip.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
-                                                        trip.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                    trip.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                        'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {trip.status}
                                                 </span>

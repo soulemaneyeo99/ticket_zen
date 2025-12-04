@@ -3,14 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { tripService, City } from '@/services/trip.service';
+import { tripsService } from '@/services/trips';
+import { City } from '@/types/api';
 import { fleetService, Vehicle } from '@/services/fleet.service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -20,20 +21,19 @@ export default function NewTripPage() {
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
     const router = useRouter();
-    const { toast } = useToast();
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [citiesData, vehiclesData] = await Promise.all([
-                    tripService.getCities(),
+                    tripsService.getCities(),
                     fleetService.getAll()
                 ]);
                 setCities(Array.isArray(citiesData) ? citiesData : (citiesData as any).results || []);
                 setVehicles(vehiclesData.results || []);
             } catch (error) {
-                toast({ variant: "destructive", title: "Erreur de chargement des données" });
+                toast.error("Erreur de chargement des données");
             }
         };
         fetchData();
@@ -42,11 +42,11 @@ export default function NewTripPage() {
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
-            await tripService.create(data);
-            toast({ title: "Voyage créé avec succès" });
+            await tripsService.create(data);
+            toast.success("Voyage créé avec succès");
             router.push('/company/trips');
         } catch (error) {
-            toast({ variant: "destructive", title: "Erreur lors de la création" });
+            toast.error("Erreur lors de la création");
         } finally {
             setIsLoading(false);
         }

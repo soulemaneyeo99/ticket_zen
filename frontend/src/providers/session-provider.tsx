@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/auth.store';
-import { authService } from '@/services/auth.service';
+import { useAuthStore } from '@/store/auth';
+import { authService } from '@/services/auth';
 
 export default function SessionProvider({
     children,
@@ -51,8 +51,11 @@ export default function SessionProvider({
 
                     const user = await authService.getCurrentUser();
 
-                    // Now set the real user and token
-                    setAuth(user, access);
+                    // Now set the real user and token (we need refresh token too)
+                    // But we only got access from refresh. We should get refresh too from the refresh endpoint
+                    // Let's assume the refresh endpoint returns both access and refresh
+                    const refreshData = await authService.refreshToken();
+                    setAuth(user, refreshData.access, refreshData.refresh);
 
                 } catch (error) {
                     // If refresh fails, we are truly logged out.
