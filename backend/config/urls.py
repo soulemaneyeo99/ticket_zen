@@ -53,6 +53,8 @@ router.register(r'settings', PlatformSettingsViewSet, basename='settings')
 router.register(r'faqs', FAQViewSet, basename='faq')
 router.register(r'banners', BannerViewSet, basename='banner')
 
+from apps.trips.init_views import initialize_cities
+
 urlpatterns = [
     # Admin Django
     path('admin/', admin.site.urls),
@@ -65,6 +67,9 @@ urlpatterns = [
     path('api/v1/export/', export_data, name='export-data'),
     path('api/v1/health/', health_check, name='health-check'),
     path('api/v1/info/', app_info, name='app-info'),
+    
+    # Endpoint temporaire pour initialiser les villes (à supprimer après usage)
+    path('api/v1/init-cities/', initialize_cities, name='init-cities'),
     
     # Documentation Swagger
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
