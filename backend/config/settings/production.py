@@ -2,28 +2,39 @@
 Settings pour l'environnement de production
 """
 from .base import *
+import sys
+
+# Debug: confirm production settings are loaded
+print("=" * 50, file=sys.stderr)
+print("LOADING PRODUCTION SETTINGS", file=sys.stderr)
+print("=" * 50, file=sys.stderr)
 
 DEBUG = False
 
+# ALLOWED_HOSTS with proper wildcard syntax (.domain.com not *.domain.com)
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS', 
-    default='ticket-zen.onrender.com,*.onrender.com',
+    default='ticket-zen.onrender.com,.onrender.com',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
-# CORS Configuration for production
+# CORS Configuration for production (remove trailing slashes)
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://ticket-zen.onrender.com',
-    cast=lambda v: [s.strip() for s in v.split(',')]
+    default='https://ticket-zen.onrender.com,https://ticket-zen-six.vercel.app',
+    cast=lambda v: [s.strip().rstrip('/') for s in v.split(',')]
 )
 
 # CSRF Configuration for production
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='https://ticket-zen.onrender.com',
-    cast=lambda v: [s.strip() for s in v.split(',')]
+    default='https://ticket-zen.onrender.com,https://ticket-zen-six.vercel.app',
+    cast=lambda v: [s.strip().rstrip('/') for s in v.split(',')]
 )
+
+print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}", file=sys.stderr)
+print(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}", file=sys.stderr)
+print(f"CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}", file=sys.stderr)
 
 # Security settings
 SECURE_SSL_REDIRECT = True
