@@ -14,12 +14,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, CreditCard, Smartphone, User, Mail, Phone, ArrowLeft, CheckCircle, ShieldCheck } from 'lucide-react';
+import { Loader2, CreditCard, Smartphone, User, Mail, Phone, ArrowLeft, CheckCircle, ShieldCheck, MapPin } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import dynamic from 'next/dynamic';
+
+// Dynamically import RouteMap
+const RouteMap = dynamic(() => import('@/components/features/RouteMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-48 bg-slate-100 rounded-lg flex items-center justify-center">
+            <div className="text-slate-500">Chargement de la carte...</div>
+        </div>
+    ),
+});
 
 const passengerSchema = z.object({
     first_name: z.string().min(2, 'Prénom requis'),
@@ -242,7 +253,7 @@ export default function BookingPage() {
 
                     {/* RIGHT: Summary */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-24">
+                        <div className="sticky top-24 space-y-6">
                             <Card className="border-0 shadow-lg">
                                 <CardHeader className="bg-slate-50 border-b">
                                     <CardTitle className="text-lg">Récapitulatif</CardTitle>
@@ -258,6 +269,16 @@ export default function BookingPage() {
                                             </div>
                                         )}
                                         <span className="font-bold text-slate-900">{trip.company.name}</span>
+                                    </div>
+
+                                    {/* Map Preview */}
+                                    <div className="rounded-lg overflow-hidden border border-slate-200">
+                                        <RouteMap
+                                            departureCity={trip.departure_city}
+                                            arrivalCity={trip.arrival_city}
+                                            distance={trip.distance_km}
+                                            height="200px"
+                                        />
                                     </div>
 
                                     {/* Route */}

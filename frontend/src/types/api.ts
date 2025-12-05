@@ -19,6 +19,8 @@ export interface City {
   id: number;
   name: string;
   slug: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface Company {
@@ -43,6 +45,7 @@ export interface Trip {
   vehicle: Vehicle;
   available_seats: number;
   status?: 'scheduled' | 'completed' | 'cancelled'; // Added for company view
+  distance_km?: number;
 }
 
 export interface PaginatedResponse<T> {
