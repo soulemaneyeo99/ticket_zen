@@ -66,13 +66,36 @@ export default function HomePage() {
             {/* Navbar */}
             <nav className="bg-slate-900 text-white py-4 px-4 sticky top-0 z-50 shadow-md">
                 <div className="container mx-auto flex justify-between items-center">
-                    <div className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                         <div className="bg-amber-500 p-1.5 rounded-lg">
                             <Bus className="w-5 h-5 text-white" />
                         </div>
                         <span className="text-xl font-bold tracking-tight">Ticket Zen</span>
+                    </Link>
+
+                    {/* Desktop Menu */}
+                    <div className="hidden md:flex gap-6 items-center">
+                        <Link href="/trips/search" className="text-sm hover:text-amber-400 transition-colors">
+                            Rechercher un trajet
+                        </Link>
+                        {isAuthenticated && (
+                            <>
+                                <Link href="/client" className="text-sm hover:text-amber-400 transition-colors">
+                                    Mes billets
+                                </Link>
+                                {user?.role === 'compagnie' && (
+                                    <Link href="/company" className="text-sm hover:text-amber-400 transition-colors">
+                                        Tableau de bord
+                                    </Link>
+                                )}
+                            </>
+                        )}
+                        <Link href="#aide" className="text-sm hover:text-amber-400 transition-colors">
+                            Aide
+                        </Link>
                     </div>
 
+                    {/* Desktop Auth Buttons */}
                     <div className="hidden md:flex gap-4 items-center">
                         {isAuthenticated ? (
                             <div className="flex items-center gap-4">
@@ -95,6 +118,7 @@ export default function HomePage() {
                         )}
                     </div>
 
+                    {/* Mobile Menu Button */}
                     <Button
                         variant="ghost"
                         size="icon"
@@ -108,34 +132,73 @@ export default function HomePage() {
                 {/* Mobile Menu */}
                 {mobileMenuOpen && (
                     <div className="md:hidden mt-4 pb-4 border-t border-slate-700 pt-4 space-y-3">
-                        {isAuthenticated ? (
+                        <Link
+                            href="/trips/search"
+                            className="block text-sm hover:text-amber-400 transition-colors py-2"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            Rechercher un trajet
+                        </Link>
+                        {isAuthenticated && (
                             <>
-                                <div className="text-sm text-slate-300 px-2">Bonjour, {user?.first_name}</div>
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => {
-                                        logout();
-                                        setMobileMenuOpen(false);
-                                    }}
-                                    className="w-full text-white hover:text-amber-400 justify-start"
+                                <Link
+                                    href="/client"
+                                    className="block text-sm hover:text-amber-400 transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
                                 >
-                                    Déconnexion
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                                    <Button variant="ghost" className="w-full text-white hover:text-amber-400 justify-start">
-                                        Connexion
-                                    </Button>
+                                    Mes billets
                                 </Link>
-                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                                    <Button className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
-                                        S'inscrire
-                                    </Button>
-                                </Link>
+                                {user?.role === 'compagnie' && (
+                                    <Link
+                                        href="/company"
+                                        className="block text-sm hover:text-amber-400 transition-colors py-2"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Tableau de bord
+                                    </Link>
+                                )}
                             </>
                         )}
+                        <Link
+                            href="#aide"
+                            className="block text-sm hover:text-amber-400 transition-colors py-2"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            Aide
+                        </Link>
+
+                        <div className="border-t border-slate-700 pt-3 mt-3 space-y-2">
+                            {isAuthenticated ? (
+                                <>
+                                    <div className="text-sm text-slate-300 py-2">
+                                        Bonjour, {user?.first_name}
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => {
+                                            logout();
+                                            setMobileMenuOpen(false);
+                                        }}
+                                        className="w-full text-white hover:text-amber-400 justify-start"
+                                    >
+                                        Déconnexion
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/login" className="block" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button variant="ghost" className="w-full text-white hover:text-amber-400 justify-start">
+                                            Connexion
+                                        </Button>
+                                    </Link>
+                                    <Link href="/register" className="block" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
+                                            S'inscrire
+                                        </Button>
+                                    </Link>
+                                </>
+                            )}
+                        </div>
                     </div>
                 )}
             </nav>
