@@ -186,15 +186,6 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
-DEBUG = True
-
-ALLOWED_HOSTS = ["*", "http://localhost:3000/", "localhost", "127.0.0.1", "backend"]
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-]
-
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
@@ -213,11 +204,6 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-
-# CSRF Configuration (désactivé pour API pure)
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 # Redis Configuration
 REDIS_HOST = config('REDIS_HOST', default='localhost')
