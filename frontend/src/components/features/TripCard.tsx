@@ -1,12 +1,27 @@
+'use client';
+
+import { useState } from 'react';
 import { Trip } from '@/types/api';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bus, Clock, Wifi, Zap, Snowflake } from 'lucide-react';
+import { Bus, Clock, Wifi, Snowflake, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// Dynamically import RouteMap to avoid SSR issues with Leaflet
+const RouteMap = dynamic(() => import('@/components/features/RouteMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-64 bg-slate-100 rounded-lg flex items-center justify-center">
+            <div className="text-slate-500">Chargement de la carte...</div>
+        </div>
+    ),
+});
 
 export function TripCard({ trip }: { trip: Trip }) {
+    const [showMap, setShowMap] = useState(false);
     const departTime = format(parseISO(trip.departure_datetime), 'HH:mm');
     const arrivalTime = format(parseISO(trip.arrival_datetime), 'HH:mm');
     const price = parseInt(trip.price).toLocaleString();
@@ -84,8 +99,29 @@ export function TripCard({ trip }: { trip: Trip }) {
                 </div>
             </div>
 
+            {/* Map Section (Collapsible) */}
+            {showMap && (
+                <div className="px-4 pb-4">
+                    <RouteMap
+                        departureCity={trip.departure_city}
+                        arrivalCity={trip.arrival_city}
+                        distance={trip.distance_km}
+                        height="250px"
+                    />
+                </div>
+            )}
+
             {/* Bottom: CTA */}
-            <div className="p-3 bg-slate-50">
+            <div className="p-3 bg-slate-50 space-y-2">
+                <button
+                    onClick={() => setShowMap(!showMap)}
+                    className="w-full flex items-center justify-center gap-2 py-2 text-sm text-blue-700 hover:text-blue-800 font-medium transition-colors"
+                >
+                    <MapPin className="w-4 h-4" />
+                    {showMap ? 'Masquer' : 'Voir'} l'itinéraire
+                    {showMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+
                 <Link href={`/trips/${trip.id}/book`}>
                     <Button className="w-full bg-blue-900 hover:bg-blue-800 text-white h-11 font-semibold">
                         Réserver ce billet
