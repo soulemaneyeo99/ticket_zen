@@ -21,7 +21,7 @@ CORS_ALLOWED_ORIGINS = config(
 # CSRF Configuration for production
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='https://ticket-zen.onrender.com,https://*.onrender.com',
+    default='https://ticket-zen.onrender.com',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
