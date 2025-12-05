@@ -34,4 +34,5 @@ DATABASES = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Logging for production
-LOGGING['handlers']['file']['filename'] = '/var/log/ticketzen/ticketzen.log'
+# Use default file path from base.py (BASE_DIR / 'logs' / 'ticketzen.log')
+# LOGGING['handlers']['file']['filename'] = '/var/log/ticketzen/ticketzen.log'

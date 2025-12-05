@@ -2,6 +2,7 @@
 
 # Attendre que la base de données soit prête
 export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-config.settings.production}
+mkdir -p logs
 echo "Waiting for database..."
 sleep 5
 
