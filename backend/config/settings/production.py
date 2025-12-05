@@ -5,7 +5,25 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS', 
+    default='ticket-zen.onrender.com,*.onrender.com',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+
+# CORS Configuration for production
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='https://ticket-zen.onrender.com',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+
+# CSRF Configuration for production
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://ticket-zen.onrender.com,https://*.onrender.com',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
 
 # Security settings
 SECURE_SSL_REDIRECT = True
