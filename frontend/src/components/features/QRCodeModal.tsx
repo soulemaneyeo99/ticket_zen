@@ -90,7 +90,7 @@ export function QRCodeModal({ ticketId, open, onClose }: {
                         </div>
 
                         <p className="text-xs text-center text-slate-500">
-                            Présentez ce QR code à l'embarquement
+                            Présentez ce QR code à l&apos;embarquement
                         </p>
                     </div>
                 ) : null}

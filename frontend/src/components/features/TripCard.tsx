@@ -31,8 +31,8 @@ export function TripCard({ trip }: { trip: Trip }) {
             {/* Top: Company & Price */}
             <div className="p-4 bg-slate-50 flex justify-between items-start border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     {trip.company.logo ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                             src={trip.company.logo}
                             alt={trip.company.name}
