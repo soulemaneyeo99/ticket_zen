@@ -18,6 +18,7 @@ export default function NewVehiclePage() {
     const router = useRouter();
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
@@ -25,6 +26,7 @@ export default function NewVehiclePage() {
             toast.success("Véhicule ajouté avec succès");
             router.push('/company/fleet');
         } catch (error) {
+            void error;
             toast.error("Erreur lors de l'ajout");
         } finally {
             setIsLoading(false);

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { User, MapPin, Calendar, QrCode, Download, Bus, CheckCircle, Clock, ArrowRight } from 'lucide-react';
+import { User, Calendar, QrCode, Download, Bus, CheckCircle, Clock } from 'lucide-react';
 import { format, parseISO, isFuture } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Link from 'next/link';
@@ -35,7 +35,7 @@ export default function ClientDashboard() {
                 <Card className="max-w-md mx-auto p-8 text-center">
                     <p className="text-slate-600 mb-4">Connectez-vous pour voir vos réservations</p>
                     <Link href="/">
-                        <Button className="bg-blue-600 hover:bg-blue-700">Retour à l'accueil</Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700">Retour à l&apos;accueil</Button>
                     </Link>
                 </Card>
             </div>
@@ -198,6 +198,7 @@ function StatCard({ label, value, icon, color }: {
 }
 
 function TicketCard({ ticket, isPast = false, onViewQR }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ticket: any;
     isPast?: boolean;
     onViewQR?: () => void;

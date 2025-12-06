@@ -45,7 +45,7 @@ export default function HomePage() {
     });
 
     // Fetch cities with React Query
-    const { data: cities = [], isLoading: citiesLoading } = useQuery({
+    const { data: cities = [] } = useQuery({
         queryKey: ['cities'],
         queryFn: () => apiGet<City[]>('/cities/'),
     });
@@ -111,7 +111,7 @@ export default function HomePage() {
                                 </Link>
                                 <Link href="/register">
                                     <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
-                                        S'inscrire
+                                        S&apos;inscrire
                                     </Button>
                                 </Link>
                             </>
@@ -193,7 +193,7 @@ export default function HomePage() {
                                     </Link>
                                     <Link href="/register" className="block" onClick={() => setMobileMenuOpen(false)}>
                                         <Button className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
-                                            S'inscrire
+                                            S&apos;inscrire
                                         </Button>
                                     </Link>
                                 </>
@@ -224,7 +224,7 @@ export default function HomePage() {
                             Voyagez en toute <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Confiance</span>
                         </h1>
                         <p className="text-lg text-slate-300">
-                            La plateforme de référence pour vos trajets interurbains en Côte d'Ivoire. Simple, rapide et sécurisé.
+                            La plateforme de référence pour vos trajets interurbains en Côte d&apos;Ivoire. Simple, rapide et sécurisé.
                         </p>
                     </div>
 

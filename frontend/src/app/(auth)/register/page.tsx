@@ -48,11 +48,13 @@ export default function RegisterPage() {
         try {
             // Remove password_confirm before sending to API
             const { password_confirm, ...payload } = data;
+            void password_confirm;
             await authService.register(payload);
 
             toast.success("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
 
             router.push('/login');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Registration error:', error);
             const errorMessage = error?.response?.data?.email?.[0] ||

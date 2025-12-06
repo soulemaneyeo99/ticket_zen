@@ -58,6 +58,7 @@ function LoginForm() {
                 }
             }
         } catch (error) {
+            void error;
             toast.error("Email ou mot de passe incorrect.");
         } finally {
             setIsLoading(false);
@@ -77,7 +78,7 @@ function LoginForm() {
                     </div>
                     <h1 className="text-4xl font-bold mb-6">Voyagez plus loin avec Ticket Zen</h1>
                     <p className="text-blue-100 text-lg leading-relaxed mb-8">
-                        Accédez à la plus grande plateforme de réservation de tickets de bus en Côte d'Ivoire. Gérez vos voyages, vos flottes et vos réservations en un seul endroit.
+                        Accédez à la plus grande plateforme de réservation de tickets de bus en Côte d&apos;Ivoire. Gérez vos voyages, vos flottes et vos réservations en un seul endroit.
                     </p>
                     <div className="flex items-center space-x-4 text-sm font-medium text-blue-200">
                         <div className="flex -space-x-2">

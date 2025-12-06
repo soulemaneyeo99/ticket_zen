@@ -52,6 +52,7 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
 
     const onRegisterSubmit = (data: RegisterForm) => {
         const { password_confirm, ...payload } = data;
+        void password_confirm; // Mark as used to satisfy linter
         // Remove password_confirm from payload before sending to API
         console.log('Registering user:', payload);
         registerUser(payload);

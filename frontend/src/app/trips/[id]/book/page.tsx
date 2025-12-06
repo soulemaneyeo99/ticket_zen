@@ -98,6 +98,7 @@ export default function BookingPage() {
                 phone_number: paymentMethod === 'mobile_money' ? data.phone_number : undefined,
             });
         } catch (error: unknown) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const msg = (error as any).response?.data?.detail || 'Erreur lors de la réservation';
             toast.error(msg);
         }

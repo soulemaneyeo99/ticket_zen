@@ -7,14 +7,14 @@ import { tripsService } from '@/services/trips';
 import { Trip } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Trash2, Edit, Calendar, MapPin } from 'lucide-react';
+import { Plus, Trash2, Edit, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 export default function TripsPage() {
     const queryClient = useQueryClient();
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
 
     const { data, isLoading } = useQuery({
         queryKey: ['trips', page],

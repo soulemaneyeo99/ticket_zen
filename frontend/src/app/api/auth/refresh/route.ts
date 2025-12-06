@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api/v1';
 
-export async function POST(request: Request) {
+export async function POST() {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get('refresh_token')?.value;
 
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
             access: data.access,
         });
 
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { message: 'Internal Server Error' },
             { status: 500 }

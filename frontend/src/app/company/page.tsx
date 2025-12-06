@@ -17,7 +17,7 @@ import {
     Activity
 } from 'lucide-react';
 import Link from 'next/link';
-import { apiGet } from '@/lib/api';
+
 
 interface CompanyStats {
     total_trips: number;

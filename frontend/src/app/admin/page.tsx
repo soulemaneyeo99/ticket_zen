@@ -6,7 +6,7 @@ import { authService } from '@/services/auth';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
-    const { user, logout } = useAuthStore();
+    const { logout } = useAuthStore();
     const router = useRouter();
 
     const handleLogout = async () => {

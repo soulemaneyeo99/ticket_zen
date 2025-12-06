@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 
 export default function FleetPage() {
     const queryClient = useQueryClient();
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
 
     const { data, isLoading } = useQuery({
         queryKey: ['vehicles', page],

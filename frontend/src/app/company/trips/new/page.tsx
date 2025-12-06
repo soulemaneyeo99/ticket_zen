@@ -21,7 +21,7 @@ export default function NewTripPage() {
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
     const router = useRouter();
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue } = useForm();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,15 +30,18 @@ export default function NewTripPage() {
                     tripsService.getCities(),
                     fleetService.getAll()
                 ]);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 setCities(Array.isArray(citiesData) ? citiesData : (citiesData as any).results || []);
                 setVehicles(vehiclesData.results || []);
             } catch (error) {
+                void error;
                 toast.error("Erreur de chargement des données");
             }
         };
         fetchData();
-    }, [toast]);
+    }, []);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
@@ -46,6 +49,7 @@ export default function NewTripPage() {
             toast.success("Voyage créé avec succès");
             router.push('/company/trips');
         } catch (error) {
+            void error; // Mark as used
             toast.error("Erreur lors de la création");
         } finally {
             setIsLoading(false);
@@ -80,7 +84,7 @@ export default function NewTripPage() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label>Ville d'arrivée</Label>
+                                <Label>Ville d&apos;arrivée</Label>
                                 <Select onValueChange={(val) => setValue('arrival_city', val)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Choisir..." />
@@ -100,7 +104,7 @@ export default function NewTripPage() {
                                 <Input type="datetime-local" {...register('departure_time', { required: 'Requis' })} />
                             </div>
                             <div className="space-y-2">
-                                <Label>Date et Heure d'arrivée (estimée)</Label>
+                                <Label>Date et Heure d&apos;arrivée (estimée)</Label>
                                 <Input type="datetime-local" {...register('arrival_time', { required: 'Requis' })} />
                             </div>
                         </div>
