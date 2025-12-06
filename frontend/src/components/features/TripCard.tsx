@@ -31,6 +31,7 @@ export function TripCard({ trip }: { trip: Trip }) {
             {/* Top: Company & Price */}
             <div className="p-4 bg-slate-50 flex justify-between items-start border-b border-slate-100">
                 <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     {trip.company.logo ? (
                         <img
                             src={trip.company.logo}
@@ -118,7 +119,7 @@ export function TripCard({ trip }: { trip: Trip }) {
                     className="w-full flex items-center justify-center gap-2 py-2 text-sm text-blue-700 hover:text-blue-800 font-medium transition-colors"
                 >
                     <MapPin className="w-4 h-4" />
-                    {showMap ? 'Masquer' : 'Voir'} l'itinéraire
+                    {showMap ? 'Masquer' : 'Voir'} l&apos;itinéraire
                     {showMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
 

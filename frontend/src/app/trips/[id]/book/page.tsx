@@ -262,6 +262,7 @@ export default function BookingPage() {
                                     {/* Company */}
                                     <div className="flex items-center gap-3">
                                         {trip.company.logo ? (
+                                            /* eslint-disable-next-line @next/next/no-img-element */
                                             <img src={trip.company.logo} alt={trip.company.name} className="w-10 h-10 rounded-full object-cover" />
                                         ) : (
                                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">

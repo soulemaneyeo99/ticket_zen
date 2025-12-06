@@ -44,6 +44,7 @@ export const useAuth = () => {
                 router.push('/login');
             }
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
             const msg =
                 error.response?.data?.email?.[0] || "Erreur lors de l'inscription";
