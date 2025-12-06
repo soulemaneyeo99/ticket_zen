@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,8 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, CreditCard, Smartphone, User, Mail, Phone, ArrowLeft, CheckCircle, ShieldCheck, MapPin } from 'lucide-react';
+import { Loader2, CreditCard, Smartphone, User, Mail, Phone, ArrowLeft, CheckCircle, ShieldCheck } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Link from 'next/link';
@@ -43,7 +42,6 @@ type PassengerForm = z.infer<typeof passengerSchema>;
 
 export default function BookingPage() {
     const params = useParams();
-    const router = useRouter();
     const tripId = params.id as string;
     const [paymentMethod, setPaymentMethod] = useState<'mobile_money' | 'card'>('mobile_money');
 
@@ -99,8 +97,8 @@ export default function BookingPage() {
                 method: paymentMethod,
                 phone_number: paymentMethod === 'mobile_money' ? data.phone_number : undefined,
             });
-        } catch (error: any) {
-            const msg = error.response?.data?.detail || 'Erreur lors de la réservation';
+        } catch (error: unknown) {
+            const msg = (error as any).response?.data?.detail || 'Erreur lors de la réservation';
             toast.error(msg);
         }
     };

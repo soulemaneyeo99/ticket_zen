@@ -51,7 +51,9 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
     };
 
     const onRegisterSubmit = (data: RegisterForm) => {
-        const { password_confirm: _, ...payload } = data;
+        const { password_confirm, ...payload } = data;
+        // Remove password_confirm from payload before sending to API
+        console.log('Registering user:', payload);
         registerUser(payload);
     };
 
