@@ -76,6 +76,14 @@ else:
 # Email backend for production
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# Cache Configuration for production (use local memory instead of Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
 # Logging for production
 # Use default file path from base.py (BASE_DIR / 'logs' / 'ticketzen.log')
 # LOGGING['handlers']['file']['filename'] = '/var/log/ticketzen/ticketzen.log'
