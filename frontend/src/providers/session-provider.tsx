@@ -10,7 +10,6 @@ export default function SessionProvider({
     children: React.ReactNode;
 }) {
     const { isAuthenticated, setAuth, logout } = useAuthStore();
-    const [isRestoring, setIsRestoring] = useState(true);
 
     useEffect(() => {
         const restoreSession = async () => {
@@ -57,13 +56,12 @@ export default function SessionProvider({
                     const refreshData = await authService.refreshToken();
                     setAuth(user, refreshData.access, refreshData.refresh);
 
-                } catch (error) {
+                } catch {
                     // If refresh fails, we are truly logged out.
                     // Clear any partial state
                     logout();
                 }
             }
-            setIsRestoring(false);
         };
 
         restoreSession();

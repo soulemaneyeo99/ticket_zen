@@ -1,5 +1,5 @@
 import { apiPost } from '@/lib/api';
-import { AuthResponse, LoginPayload, RegisterPayload } from '@/types/api';
+import { AuthResponse, LoginPayload, RegisterPayload, User } from '@/types/api';
 import { useAuthStore } from '@/store/auth';
 
 export const authService = {
@@ -44,7 +44,7 @@ export const authService = {
     },
 
     getCurrentUser: async () => {
-        const data = await apiPost<{ user: any }>('/auth/user/', {});
+        const data = await apiPost<{ user: User }>('/auth/user/', {});
         return data.user;
     },
 };
