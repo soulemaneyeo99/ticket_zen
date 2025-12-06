@@ -49,15 +49,29 @@ X_FRAME_OPTIONS = 'DENY'
 
 import dj_database_url
 
-# Production database (keep PostgreSQL config from base.py)
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=''),
-        conn_max_age=600,
-        conn_health_checks=True,
-        ssl_require=True,
-    )
-}
+# Production database configuration
+# Try to use DATABASE_URL first (Render PostgreSQL addon)
+# If not available, fall back to individual DB_* environment variables from base.py
+database_url = config('DATABASE_URL', default='')
+
+if database_url:
+    # Use DATABASE_URL if provided (Render PostgreSQL addon)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        )
+    }
+    print(f"Using DATABASE_URL for database connection", file=sys.stderr)
+else:
+    # Fall back to base.py configuration with individual variables
+    # DATABASES is already defined in base.py, just update connection settings
+    DATABASES['default']['CONN_MAX_AGE'] = 600
+    DATABASES['default']['OPTIONS']['connect_timeout'] = 10
+    print(f"Using DB_* environment variables for database connection", file=sys.stderr)
+    print(f"DB_HOST: {DATABASES['default']['HOST']}", file=sys.stderr)
 
 # Email backend for production
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
