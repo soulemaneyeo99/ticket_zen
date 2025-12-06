@@ -11,7 +11,7 @@ export const tripsService = {
     search: async (params: SearchTripsParams) => {
         // The prompt says: GET /api/v1/trips/search/?departure_city=ID&arrival_city=ID&date=YYYY-MM-DD
         // apiGet handles params automatically if passed as second argument
-        return apiGet<PaginatedResponse<Trip>>('/trips/search/', params);
+        return apiGet<PaginatedResponse<Trip>>('/trips/search/', params as unknown as Record<string, unknown>);
     },
 
     getById: async (id: string) => {
