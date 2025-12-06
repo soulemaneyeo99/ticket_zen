@@ -24,7 +24,7 @@ export interface CompanyStats {
 }
 
 export const companyService = {
-    getAll: async (params?: any): Promise<PaginatedResponse<Company>> => {
+    getAll: async (params?: Record<string, unknown>): Promise<PaginatedResponse<Company>> => {
         const response = await api.get('/companies/', { params });
         return response.data;
     },

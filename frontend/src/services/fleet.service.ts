@@ -21,7 +21,7 @@ export interface Vehicle {
 }
 
 export const fleetService = {
-    getAll: async (params?: any): Promise<PaginatedResponse<Vehicle>> => {
+    getAll: async (params?: Record<string, unknown>): Promise<PaginatedResponse<Vehicle>> => {
         const response = await api.get('/vehicles/', { params });
         return response.data;
     },

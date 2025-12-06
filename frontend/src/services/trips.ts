@@ -18,7 +18,7 @@ export const tripsService = {
         return apiGet<Trip>(`/trips/${id}/`);
     },
 
-    getAll: async (params?: any) => {
+    getAll: async (params?: Record<string, unknown>) => {
         return apiGet<PaginatedResponse<Trip>>('/trips/', params);
     },
 
@@ -30,7 +30,7 @@ export const tripsService = {
         return apiGet<City[]>('/cities/');
     },
 
-    create: async (data: any) => {
+    create: async (data: Omit<Trip, 'id' | 'created_at' | 'updated_at'>) => {
         return apiPost<Trip>('/trips/', data);
     },
 };
