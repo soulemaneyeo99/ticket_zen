@@ -38,14 +38,26 @@ print(f"CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}", file=sys.stderr)
 
 # Security settings
 SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Session and Cookie settings for API
+# Since this is an API-first application, we don't need strict session cookies
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'None'  # Allow cross-site requests for API
+
+# CSRF settings for API
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Must be False for JavaScript to read it
+CSRF_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
+CSRF_USE_SESSIONS = False  # Use cookie-based CSRF instead of session
+
+# HSTS settings (less strict for initial deployment)
+SECURE_HSTS_SECONDS = 0  # Disable HSTS for now
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
 
 import dj_database_url
 
