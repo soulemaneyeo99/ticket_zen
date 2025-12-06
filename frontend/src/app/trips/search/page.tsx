@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { tripsService } from '@/services/trips';
@@ -72,7 +72,7 @@ function SearchResults() {
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">Aucun voyage trouvé</h3>
                 <p className="text-slate-500 max-w-xs mx-auto">
-                    Désolé, nous n'avons pas trouvé de voyages pour cette date. Essayez de changer vos critères.
+                    Désolé, nous n&apos;avons pas trouvé de voyages pour cette date. Essayez de changer vos critères.
                 </p>
                 <Button className="mt-6" variant="outline" asChild>
                     <Link href="/">Nouvelle recherche</Link>

@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Mail, Lock, User, Phone } from 'lucide-react';
+import { Loader2, Mail, Lock, Phone } from 'lucide-react';
 
 const loginSchema = z.object({
     email: z.string().email('Email invalide'),
@@ -51,7 +51,7 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
     };
 
     const onRegisterSubmit = (data: RegisterForm) => {
-        const { password_confirm, ...payload } = data;
+        const { password_confirm: _, ...payload } = data;
         registerUser(payload);
     };
 
@@ -64,7 +64,7 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
                     </DialogTitle>
                 </DialogHeader>
 
-                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="w-full">
+                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'login' | 'register')} className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="login">Connexion</TabsTrigger>
                         <TabsTrigger value="register">Inscription</TabsTrigger>
