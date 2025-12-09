@@ -9,9 +9,13 @@ export interface SearchTripsParams {
 
 export const tripsService = {
     search: async (params: SearchTripsParams) => {
-        // The prompt says: GET /api/v1/trips/search/?departure_city=ID&arrival_city=ID&date=YYYY-MM-DD
-        // apiGet handles params automatically if passed as second argument
-        return apiGet<PaginatedResponse<Trip>>('/trips/search/', params as unknown as Record<string, unknown>);
+        const queryParams = {
+            departure_city: params.departure_city,
+            arrival_city: params.arrival_city,
+            departure_date: params.date,
+            passengers: 1 // Default to 1 as it's not yet in the form
+        };
+        return apiGet<PaginatedResponse<Trip>>('/trips/search/', queryParams);
     },
 
     getById: async (id: string) => {
