@@ -112,10 +112,10 @@ class TripViewSet(viewsets.ModelViewSet):
         trip.company.total_trips += 1
         trip.company.save(update_fields=['total_trips'])
     
-    @action(detail=False, methods=['post'], url_path='search', permission_classes=[AllowAny])
+    @action(detail=False, methods=['get'], url_path='search', permission_classes=[AllowAny])
     def search(self, request):
         """Rechercher des voyages"""
-        serializer = TripSearchSerializer(data=request.data)
+        serializer = TripSearchSerializer(data=request.query_params)
         
         if serializer.is_valid():
             departure_city = serializer.validated_data['departure_city']
