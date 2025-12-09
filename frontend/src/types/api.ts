@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   email: string;
-  role: 'client' | 'compagnie' | 'admin' | 'embarqueur';
+  role: 'voyageur' | 'compagnie' | 'admin' | 'embarqueur';
   first_name: string;
   last_name: string;
   phone_number: string;
@@ -66,7 +66,7 @@ export interface RegisterPayload {
   first_name: string;
   last_name: string;
   phone_number: string;
-  role: 'client' | 'compagnie';
+  role: 'voyageur' | 'compagnie';
 }
 
 export interface PassengerDetails {
