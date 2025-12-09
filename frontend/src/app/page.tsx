@@ -48,7 +48,18 @@ export default function HomePage() {
     // Fetch cities with React Query
     const { data: cities = [] } = useQuery({
         queryKey: ['cities'],
-        queryFn: () => apiGet<City[]>('/cities/'),
+        queryFn: async () => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const response = await apiGet<any>('/cities/');
+            // Handle both paginated and non-paginated responses
+            if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+                return response.results as City[];
+            }
+            if (Array.isArray(response)) {
+                return response as City[];
+            }
+            return [] as City[];
+        },
     });
 
     console.log('Cities loaded:', cities.length, cities);
