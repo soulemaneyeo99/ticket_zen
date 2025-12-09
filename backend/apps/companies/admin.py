@@ -60,7 +60,7 @@ class CompanyAdmin(admin.ModelAdmin):
         else:  # Si on crée un nouvel objet
             return [
                 'total_trips', 'total_tickets_sold', 'total_revenue',
-                'validated_by', 'validated_at'
+                'validated_by', 'validated_at', 'created_at', 'updated_at'
             ]
     
     prepopulated_fields = {'slug': ('name',)}
