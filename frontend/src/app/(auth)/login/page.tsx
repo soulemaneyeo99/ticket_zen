@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuthStore } from '@/store/auth';
 import { authService } from '@/services/auth';
 import { LoginPayload } from '@/types/api';
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Bus, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -73,8 +74,8 @@ function LoginForm() {
                 <div className="absolute inset-0 bg-[url('/hero-bus.png')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
 
                 <div className="relative z-10 text-white p-12 max-w-lg">
-                    <div className="mb-8 bg-white/10 w-16 h-16 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <Bus className="w-8 h-8" />
+                    <div className="mb-8 bg-white p-4 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Image src="/logo.png" alt="Ticket Zen Logo" width={80} height={80} className="w-16 h-16 object-contain" />
                     </div>
                     <h1 className="text-4xl font-bold mb-6">Voyagez plus loin avec Ticket Zen</h1>
                     <p className="text-blue-100 text-lg leading-relaxed mb-8">
@@ -96,7 +97,10 @@ function LoginForm() {
                 <div className="w-full max-w-md space-y-8">
                     <div className="text-center lg:text-left">
                         <Link href="/" className="inline-flex items-center text-blue-600 font-bold text-xl mb-8 lg:hidden">
-                            <Bus className="w-6 h-6 mr-2" /> Ticket Zen
+                            <div className="bg-white p-1 rounded-lg mr-2 border border-blue-100 shadow-sm">
+                                <Image src="/logo.png" alt="Ticket Zen Logo" width={32} height={32} className="w-6 h-6 object-contain" />
+                            </div>
+                            Ticket Zen
                         </Link>
                         <h2 className="text-3xl font-bold text-gray-900">Bon retour !</h2>
                         <p className="mt-2 text-gray-600">Connectez-vous pour accéder à votre espace.</p>

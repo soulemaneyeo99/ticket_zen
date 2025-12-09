@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Calendar, MapPin, Bus, Shield, Smartphone, Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { useAuthStore } from '@/store/auth';
 
@@ -67,8 +68,8 @@ export default function HomePage() {
             <nav className="bg-slate-900 text-white py-4 px-4 sticky top-0 z-50 shadow-md">
                 <div className="container mx-auto flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                        <div className="bg-amber-500 p-1.5 rounded-lg">
-                            <Bus className="w-5 h-5 text-white" />
+                        <div className="bg-white p-1 rounded-lg">
+                            <Image src="/logo.png" alt="Ticket Zen Logo" width={32} height={32} className="w-8 h-8 object-contain" />
                         </div>
                         <span className="text-xl font-bold tracking-tight">Ticket Zen</span>
                     </Link>
