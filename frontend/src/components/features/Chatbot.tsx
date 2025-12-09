@@ -7,12 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
     id: string;
     text: string;
     sender: 'user' | 'bot';
     timestamp: Date;
+    isStreaming?: boolean;
 }
 
 const INITIAL_MESSAGES: Message[] = [
@@ -24,14 +27,13 @@ const INITIAL_MESSAGES: Message[] = [
     },
 ];
 
-
-
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -43,7 +45,7 @@ export default function Chatbot() {
 
     const handleSendMessage = async (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!inputValue.trim()) return;
+        if (!inputValue.trim() || isTyping) return;
 
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -53,16 +55,34 @@ export default function Chatbot() {
         };
 
         setMessages((prev) => [...prev, userMessage]);
+        const currentInput = inputValue;
         setInputValue('');
         setIsTyping(true);
 
+        // Create a temporary bot message for streaming
+        const botMessageId = (Date.now() + 1).toString();
+        const botMessage: Message = {
+            id: botMessageId,
+            text: '',
+            sender: 'bot',
+            timestamp: new Date(),
+            isStreaming: true,
+        };
+
+        setMessages((prev) => [...prev, botMessage]);
+
         try {
-            // Prepare history for API (exclude the last message we just added locally for now, or include it? 
-            // The API route expects history + current message. Let's send history excluding the new one, and the new one as 'message')
             const history = messages.map(m => ({
                 sender: m.sender,
                 text: m.text
             }));
+
+            // Abort previous request if any
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+
+            abortControllerRef.current = new AbortController();
 
             const response = await fetch('/api/chat', {
                 method: 'POST',
@@ -70,36 +90,88 @@ export default function Chatbot() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    message: inputValue,
+                    message: currentInput,
                     history: history
                 }),
+                signal: abortControllerRef.current.signal,
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.error || 'Erreur réseau');
+                throw new Error('Network error');
             }
 
-            const botMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: data.text,
-                sender: 'bot',
-                timestamp: new Date(),
-            };
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
 
-            setMessages((prev) => [...prev, botMessage]);
+            if (!reader) {
+                throw new Error('No reader available');
+            }
+
+            let accumulatedText = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+
+                        if (data === '[DONE]') {
+                            setMessages((prev) =>
+                                prev.map((msg) =>
+                                    msg.id === botMessageId
+                                        ? { ...msg, isStreaming: false }
+                                        : msg
+                                )
+                            );
+                            break;
+                        }
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.text) {
+                                accumulatedText += parsed.text;
+                                setMessages((prev) =>
+                                    prev.map((msg) =>
+                                        msg.id === botMessageId
+                                            ? { ...msg, text: accumulatedText }
+                                            : msg
+                                    )
+                                );
+                            }
+                        } catch (e) {
+                            // Ignore parse errors for incomplete chunks
+                            void e;
+                        }
+                    }
+                }
+            }
+
         } catch (error) {
+            if (error instanceof Error && error.name === 'AbortError') {
+                return; // Request was aborted, ignore
+            }
+
             console.error('Chat error:', error);
-            const errorMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: "Désolé, je rencontre des difficultés pour me connecter. Veuillez réessayer plus tard.",
-                sender: 'bot',
-                timestamp: new Date(),
-            };
-            setMessages((prev) => [...prev, errorMessage]);
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: "Désolé, je rencontre des difficultés pour me connecter. Veuillez réessayer plus tard.",
+                            isStreaming: false,
+                        }
+                        : msg
+                )
+            );
         } finally {
             setIsTyping(false);
+            abortControllerRef.current = null;
         }
     };
 
@@ -167,7 +239,29 @@ export default function Chatbot() {
                                                     : "bg-white text-slate-800 border border-slate-100 rounded-tl-none"
                                             )}
                                         >
-                                            {msg.text}
+                                            {msg.sender === 'bot' ? (
+                                                <div className="prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0">
+                                                    <ReactMarkdown
+                                                        remarkPlugins={[remarkGfm]}
+                                                        components={{
+                                                            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                                                            ul: ({ children }) => <ul className="list-disc pl-4 mb-2">{children}</ul>,
+                                                            ol: ({ children }) => <ol className="list-decimal pl-4 mb-2">{children}</ol>,
+                                                            li: ({ children }) => <li className="mb-1">{children}</li>,
+                                                            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                                                            em: ({ children }) => <em className="italic">{children}</em>,
+                                                            code: ({ children }) => <code className="bg-slate-100 px-1 rounded text-xs">{children}</code>,
+                                                        }}
+                                                    >
+                                                        {msg.text || ' '}
+                                                    </ReactMarkdown>
+                                                    {msg.isStreaming && (
+                                                        <span className="inline-block w-1 h-4 bg-slate-400 animate-pulse ml-0.5" />
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                msg.text
+                                            )}
                                             <div
                                                 className={cn(
                                                     "text-[10px] mt-1 opacity-70",
@@ -180,7 +274,7 @@ export default function Chatbot() {
                                     </div>
                                 ))}
 
-                                {isTyping && (
+                                {isTyping && messages[messages.length - 1]?.sender !== 'bot' && (
                                     <div className="flex justify-start">
                                         <div className="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
                                             <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -200,6 +294,7 @@ export default function Chatbot() {
                                         onChange={(e) => setInputValue(e.target.value)}
                                         placeholder="Posez votre question..."
                                         className="flex-1 bg-slate-50 border-slate-200 focus-visible:ring-blue-600"
+                                        disabled={isTyping}
                                     />
                                     <Button
                                         type="submit"

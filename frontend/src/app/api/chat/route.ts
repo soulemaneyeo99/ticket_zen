@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -18,6 +17,7 @@ Tes directives :
 2. **Langue** : Français (Ivoirien courant accepté si l'utilisateur l'utilise, mais reste professionnel).
 3. **Limitations** : Tu ne peux pas effectuer d'actions réelles (rembourser, réserver) mais tu guides l'utilisateur vers les bonnes pages.
 4. **Sécurité** : Ne demande jamais de mot de passe ou de code PIN Mobile Money.
+5. **Format** : Utilise le Markdown pour formater tes réponses (listes, gras, italique, etc.) pour une meilleure lisibilité.
 
 Si on te demande des horaires ou des prix spécifiques, explique que tu n'as pas accès aux données en temps réel et invite l'utilisateur à utiliser la recherche sur la page d'accueil.
 `;
@@ -33,9 +33,9 @@ export async function POST(req: Request) {
         const { message, history } = await req.json();
 
         if (!process.env.GEMINI_API_KEY) {
-            return NextResponse.json(
-                { error: "Clé API non configurée" },
-                { status: 500 }
+            return new Response(
+                JSON.stringify({ error: "Clé API non configurée" }),
+                { status: 500, headers: { 'Content-Type': 'application/json' } }
             );
         }
 
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
                 },
                 {
                     role: "model",
-                    parts: [{ text: "Compris. Je suis prêt à aider les utilisateurs de Ticket Zen." }],
+                    parts: [{ text: "Compris. Je suis prêt à aider les utilisateurs de Ticket Zen avec des réponses formatées en Markdown." }],
                 },
                 ...(history || []).map((msg: Message) => ({
                     role: msg.sender === 'user' ? 'user' : 'model',
@@ -58,16 +58,39 @@ export async function POST(req: Request) {
             ],
         });
 
-        const result = await chat.sendMessage(message);
-        const response = await result.response;
-        const text = response.text();
+        const result = await chat.sendMessageStream(message);
 
-        return NextResponse.json({ text });
+        // Create a ReadableStream for Server-Sent Events
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+            async start(controller) {
+                try {
+                    for await (const chunk of result.stream) {
+                        const text = chunk.text();
+                        const data = `data: ${JSON.stringify({ text })}\n\n`;
+                        controller.enqueue(encoder.encode(data));
+                    }
+                    controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+                    controller.close();
+                } catch (error) {
+                    console.error("Streaming error:", error);
+                    controller.error(error);
+                }
+            },
+        });
+
+        return new Response(stream, {
+            headers: {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+            },
+        });
     } catch (error) {
         console.error("Gemini API Error:", error);
-        return NextResponse.json(
-            { error: "Une erreur est survenue lors du traitement de votre demande." },
-            { status: 500 }
+        return new Response(
+            JSON.stringify({ error: "Une erreur est survenue lors du traitement de votre demande." }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
     }
 }
