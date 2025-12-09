@@ -24,13 +24,7 @@ const INITIAL_MESSAGES: Message[] = [
     },
 ];
 
-const FAQ_RESPONSES: Record<string, string> = {
-    'remboursement': 'Pour demander un remboursement, veuillez contacter notre service client au +225 07 07 07 07 07 ou via le formulaire de contact. Les remboursements sont possibles jusqu\'à 24h avant le départ.',
-    'bagage': 'Chaque passager a droit à un bagage en soute (max 23kg) et un bagage à main. Les bagages supplémentaires peuvent être facturés.',
-    'paiement': 'Nous acceptons les paiements par Mobile Money (Orange, MTN, Moov, Wave) et par carte bancaire (Visa, Mastercard).',
-    'contact': 'Vous pouvez nous joindre par téléphone au +225 07 07 07 07 07 ou par email à support@ticketzen.com.',
-    'default': 'Je ne suis pas sûr de comprendre. Vous pouvez poser des questions sur les remboursements, les bagages ou les paiements.',
-};
+
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
@@ -62,33 +56,51 @@ export default function Chatbot() {
         setInputValue('');
         setIsTyping(true);
 
-        // Simulate bot response
-        setTimeout(() => {
-            const lowerInput = userMessage.text.toLowerCase();
-            let responseText = FAQ_RESPONSES['default'];
+        try {
+            // Prepare history for API (exclude the last message we just added locally for now, or include it? 
+            // The API route expects history + current message. Let's send history excluding the new one, and the new one as 'message')
+            const history = messages.map(m => ({
+                sender: m.sender,
+                text: m.text
+            }));
 
-            if (lowerInput.includes('remboursement') || lowerInput.includes('annuler')) {
-                responseText = FAQ_RESPONSES['remboursement'];
-            } else if (lowerInput.includes('bagage') || lowerInput.includes('valise')) {
-                responseText = FAQ_RESPONSES['bagage'];
-            } else if (lowerInput.includes('paiement') || lowerInput.includes('payer') || lowerInput.includes('argent')) {
-                responseText = FAQ_RESPONSES['paiement'];
-            } else if (lowerInput.includes('contact') || lowerInput.includes('téléphone') || lowerInput.includes('email')) {
-                responseText = FAQ_RESPONSES['contact'];
-            } else if (lowerInput.includes('bonjour') || lowerInput.includes('salut')) {
-                responseText = 'Bonjour ! Comment puis-je vous aider ?';
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: inputValue,
+                    history: history
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Erreur réseau');
             }
 
             const botMessage: Message = {
                 id: (Date.now() + 1).toString(),
-                text: responseText,
+                text: data.text,
                 sender: 'bot',
                 timestamp: new Date(),
             };
 
             setMessages((prev) => [...prev, botMessage]);
+        } catch (error) {
+            console.error('Chat error:', error);
+            const errorMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                text: "Désolé, je rencontre des difficultés pour me connecter. Veuillez réessayer plus tard.",
+                sender: 'bot',
+                timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, errorMessage]);
+        } finally {
             setIsTyping(false);
-        }, 1500);
+        }
     };
 
     return (
