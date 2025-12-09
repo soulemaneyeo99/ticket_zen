@@ -24,7 +24,7 @@ const registerSchema = z.object({
     first_name: z.string().min(2, 'Prénom requis'),
     last_name: z.string().min(2, 'Nom requis'),
     phone_number: z.string().regex(/^\+?[0-9]{10,15}$/, 'Numéro invalide'),
-    role: z.literal('client'),
+    role: z.literal('voyageur'),
 }).refine(data => data.password === data.password_confirm, {
     message: 'Les mots de passe ne correspondent pas',
     path: ['password_confirm'],
@@ -43,7 +43,7 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
 
     const registerForm = useForm<RegisterForm>({
         resolver: zodResolver(registerSchema),
-        defaultValues: { role: 'client' },
+        defaultValues: { role: 'voyageur' },
     });
 
     const onLoginSubmit = (data: LoginForm) => {

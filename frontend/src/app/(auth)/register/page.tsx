@@ -122,8 +122,7 @@ export default function RegisterPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div
                                 onClick={() => handleRoleSelect('voyageur')}
-                                type="button"
-                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${selectedRole === 'voyageur'
+                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 cursor-pointer ${selectedRole === 'voyageur'
                                     ? 'border-blue-600 bg-blue-50 text-blue-700'
                                     : 'border-gray-200 hover:border-blue-200'
                                     }`}>
@@ -132,8 +131,7 @@ export default function RegisterPage() {
                             </div>
                             <div
                                 onClick={() => handleRoleSelect('compagnie')}
-                                type="button"
-                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${selectedRole === 'compagnie'
+                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 cursor-pointer ${selectedRole === 'compagnie'
                                     ? 'border-blue-600 bg-blue-50 text-blue-700'
                                     : 'border-gray-200 hover:border-blue-200'
                                     }`}
