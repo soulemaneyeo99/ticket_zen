@@ -20,7 +20,7 @@ from apps.users.serializers import (
     UserListSerializer
 )
 from apps.users.permissions import IsAdminGlobal, IsOwnerOrAdmin
-from apps.logs.models import ActivityLog
+# from apps.logs.models import ActivityLog
 from utils.pagination import StandardResultsSetPagination
 
 User = get_user_model()
@@ -44,24 +44,24 @@ class AuthViewSet(viewsets.GenericViewSet):
             refresh = RefreshToken.for_user(user)
             
             # Logger l'inscription (skip for SQLite due to JSONField issues)
-            try:
-                ActivityLog.objects.create(
-                    user=user,
-                    action=ActivityLog.USER_REGISTER,
-                    description=f"Inscription réussie : {user.email}",
-                    details={
-                        'user_id': str(user.id),
-                        'role': user.role,
-                        'email': user.email
-                    },
-                    content_type='User',
-                    object_id=str(user.id),
-                    severity=ActivityLog.SEVERITY_INFO,
-                    ip_address=self.get_client_ip(request)
-                )
-            except Exception as e:
-                # Ignore logging errors for SQLite compatibility
-                pass
+            # try:
+            #     ActivityLog.objects.create(
+            #         user=user,
+            #         action=ActivityLog.USER_REGISTER,
+            #         description=f"Inscription réussie : {user.email}",
+            #         details={
+            #             'user_id': str(user.id),
+            #             'role': user.role,
+            #             'email': user.email
+            #         },
+            #         content_type='User',
+            #         object_id=str(user.id),
+            #         severity=ActivityLog.SEVERITY_INFO,
+            #         ip_address=self.get_client_ip(request)
+            #     )
+            # except Exception as e:
+            #     # Ignore logging errors for SQLite compatibility
+            #     pass
             
             return Response({
                 'message': 'Inscription réussie',
@@ -94,25 +94,25 @@ class AuthViewSet(viewsets.GenericViewSet):
             refresh = RefreshToken.for_user(user)
             
             # Logger la connexion (skip for SQLite due to JSONField issues)
-            try:
-                ActivityLog.objects.create(
-                    user=user,
-                    action=ActivityLog.USER_LOGIN,
-                    description=f"Connexion réussie : {user.email}",
-                    details={
-                        'user_id': str(user.id),
-                        'role': user.role,
-                        'email': user.email
-                    },
-                    content_type='User',
-                    object_id=str(user.id),
-                    severity=ActivityLog.SEVERITY_INFO,
-                    ip_address=self.get_client_ip(request),
-                    user_agent=request.META.get('HTTP_USER_AGENT', '')
-                )
-            except Exception:
-                # Ignore logging errors for SQLite compatibility
-                pass
+            # try:
+            #     ActivityLog.objects.create(
+            #         user=user,
+            #         action=ActivityLog.USER_LOGIN,
+            #         description=f"Connexion réussie : {user.email}",
+            #         details={
+            #             'user_id': str(user.id),
+            #             'role': user.role,
+            #             'email': user.email
+            #         },
+            #         content_type='User',
+            #         object_id=str(user.id),
+            #         severity=ActivityLog.SEVERITY_INFO,
+            #         ip_address=self.get_client_ip(request),
+            #         user_agent=request.META.get('HTTP_USER_AGENT', '')
+            #     )
+            # except Exception:
+            #     # Ignore logging errors for SQLite compatibility
+            #     pass
             
             return Response({
                 'message': 'Connexion réussie',
@@ -156,16 +156,16 @@ class AuthViewSet(viewsets.GenericViewSet):
                 token.blacklist()
             
             # Logger la déconnexion
-            ActivityLog.objects.create(
-                user=request.user,
-                action=ActivityLog.USER_LOGOUT,
-                description=f"Déconnexion : {request.user.email}",
-                details={'user_id': str(request.user.id)},
-                content_type='User',
-                object_id=str(request.user.id),
-                severity=ActivityLog.SEVERITY_INFO,
-                ip_address=self.get_client_ip(request)
-            )
+            # ActivityLog.objects.create(
+            #     user=request.user,
+            #     action=ActivityLog.USER_LOGOUT,
+            #     description=f"Déconnexion : {request.user.email}",
+            #     details={'user_id': str(request.user.id)},
+            #     content_type='User',
+            #     object_id=str(request.user.id),
+            #     severity=ActivityLog.SEVERITY_INFO,
+            #     ip_address=self.get_client_ip(request)
+            # )
             
             return Response({
                 'message': 'Déconnexion réussie'
@@ -248,19 +248,19 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             
             # Logger la modification
-            ActivityLog.objects.create(
-                user=request.user,
-                action=ActivityLog.USER_UPDATE,
-                description=f"Mise à jour du profil : {request.user.email}",
-                details={
-                    'user_id': str(request.user.id),
-                    'updated_fields': list(serializer.validated_data.keys())
-                },
-                content_type='User',
-                object_id=str(request.user.id),
-                severity=ActivityLog.SEVERITY_INFO,
-                ip_address=AuthViewSet.get_client_ip(request)
-            )
+            # ActivityLog.objects.create(
+            #     user=request.user,
+            #     action=ActivityLog.USER_UPDATE,
+            #     description=f"Mise à jour du profil : {request.user.email}",
+            #     details={
+            #         'user_id': str(request.user.id),
+            #         'updated_fields': list(serializer.validated_data.keys())
+            #     },
+            #     content_type='User',
+            #     object_id=str(request.user.id),
+            #     severity=ActivityLog.SEVERITY_INFO,
+            #     ip_address=AuthViewSet.get_client_ip(request)
+            # )
             
             return Response({
                 'message': 'Profil mis à jour avec succès',
@@ -281,16 +281,16 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             
             # Logger le changement de mot de passe
-            ActivityLog.objects.create(
-                user=request.user,
-                action=ActivityLog.USER_UPDATE,
-                description=f"Changement de mot de passe : {request.user.email}",
-                details={'user_id': str(request.user.id)},
-                content_type='User',
-                object_id=str(request.user.id),
-                severity=ActivityLog.SEVERITY_INFO,
-                ip_address=AuthViewSet.get_client_ip(request)
-            )
+            # ActivityLog.objects.create(
+            #     user=request.user,
+            #     action=ActivityLog.USER_UPDATE,
+            #     description=f"Changement de mot de passe : {request.user.email}",
+            #     details={'user_id': str(request.user.id)},
+            #     content_type='User',
+            #     object_id=str(request.user.id),
+            #     severity=ActivityLog.SEVERITY_INFO,
+            #     ip_address=AuthViewSet.get_client_ip(request)
+            # )
             
             return Response({
                 'message': 'Mot de passe changé avec succès'
@@ -306,19 +306,19 @@ class UserViewSet(viewsets.ModelViewSet):
         user.save()
         
         # Logger l'action
-        ActivityLog.objects.create(
-            user=request.user,
-            action=ActivityLog.ADMIN_ACTION,
-            description=f"{'Activation' if user.is_active else 'Désactivation'} utilisateur : {user.email}",
-            details={
-                'target_user_id': str(user.id),
-                'is_active': user.is_active
-            },
-            content_type='User',
-            object_id=str(user.id),
-            severity=ActivityLog.SEVERITY_WARNING,
-            ip_address=AuthViewSet.get_client_ip(request)
-        )
+        # ActivityLog.objects.create(
+        #     user=request.user,
+        #     action=ActivityLog.ADMIN_ACTION,
+        #     description=f"{'Activation' if user.is_active else 'Désactivation'} utilisateur : {user.email}",
+        #     details={
+        #         'target_user_id': str(user.id),
+        #         'is_active': user.is_active
+        #     },
+        #     content_type='User',
+        #     object_id=str(user.id),
+        #     severity=ActivityLog.SEVERITY_WARNING,
+        #     ip_address=AuthViewSet.get_client_ip(request)
+        # )
         
         return Response({
             'message': f"Utilisateur {'activé' if user.is_active else 'désactivé'} avec succès",

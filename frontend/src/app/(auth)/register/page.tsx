@@ -26,7 +26,7 @@ const registerSchema = z.object({
     phone_number: z.string().min(10, 'Numéro invalide'),
     password: z.string().min(8, '8 caractères minimum'),
     password_confirm: z.string(),
-    role: z.enum(['client', 'compagnie']),
+    role: z.enum(['voyageur', 'compagnie']),
 }).refine((data) => data.password === data.password_confirm, {
     message: "Les mots de passe ne correspondent pas",
     path: ["password_confirm"],
@@ -35,22 +35,20 @@ const registerSchema = z.object({
 export default function RegisterPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedRole, setSelectedRole] = useState<'client' | 'compagnie'>('client');
+    const [selectedRole, setSelectedRole] = useState<'voyageur' | 'compagnie'>('voyageur');
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<RegisterForm>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            role: 'client'
+            role: 'voyageur'
         }
     });
 
     const onSubmit = async (data: RegisterForm) => {
         setIsLoading(true);
         try {
-            // Remove password_confirm before sending to API
-            const { password_confirm, ...payload } = data;
-            void password_confirm;
-            await authService.register(payload);
+            // Backend expects password_confirm and role 'voyageur'
+            await authService.register(data);
 
             toast.success("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
 
@@ -70,7 +68,7 @@ export default function RegisterPage() {
         }
     };
 
-    const handleRoleSelect = (role: 'client' | 'compagnie') => {
+    const handleRoleSelect = (role: 'voyageur' | 'compagnie') => {
         setSelectedRole(role);
         setValue('role', role);
     };
@@ -123,15 +121,22 @@ export default function RegisterPage() {
                         {/* Role Selection */}
                         <div className="grid grid-cols-2 gap-4">
                             <div
-                                onClick={() => handleRoleSelect('client')}
-                                className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${selectedRole === 'client' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-                            >
-                                <User className={`w-6 h-6 mb-2 ${selectedRole === 'client' ? 'text-blue-600' : 'text-gray-400'}`} />
-                                <h3 className={`font-bold ${selectedRole === 'client' ? 'text-blue-900' : 'text-gray-700'}`}>Voyageur</h3>
+                                onClick={() => handleRoleSelect('voyageur')}
+                                type="button"
+                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${selectedRole === 'voyageur'
+                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                    : 'border-gray-200 hover:border-blue-200'
+                                    }`}>
+                                <User className={`w-6 h-6 mb-2 ${selectedRole === 'voyageur' ? 'text-blue-600' : 'text-gray-400'}`} />
+                                <h3 className={`font-bold ${selectedRole === 'voyageur' ? 'text-blue-900' : 'text-gray-700'}`}>Voyageur</h3>
                             </div>
                             <div
                                 onClick={() => handleRoleSelect('compagnie')}
-                                className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${selectedRole === 'compagnie' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                                type="button"
+                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${selectedRole === 'compagnie'
+                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                    : 'border-gray-200 hover:border-blue-200'
+                                    }`}
                             >
                                 <Building2 className={`w-6 h-6 mb-2 ${selectedRole === 'compagnie' ? 'text-blue-600' : 'text-gray-400'}`} />
                                 <h3 className={`font-bold ${selectedRole === 'compagnie' ? 'text-blue-900' : 'text-gray-700'}`}>Compagnie</h3>
